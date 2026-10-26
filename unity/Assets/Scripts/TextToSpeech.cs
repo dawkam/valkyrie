@@ -102,7 +102,7 @@ public static class TextToSpeech
         {
             narrator = TextToSpeechNarrator.Create();
         }
-        string language = GetLanguageCode(Game.Get().currentLang);
+        string language = GetLanguageCode(SpeechLanguage());
         PiperSpeech.Install(language, narrator);
         if (PiperSpeech.IsInstalled(language))
         {
@@ -161,6 +161,23 @@ public static class TextToSpeech
     {
         StringKey name = new StringKey("val", SYMBOL_NAME_KEY_PREFIX + symbol.ToUpperInvariant());
         return name.KeyExists() ? name.Translate() : symbol;
+    }
+
+    private static string SpeechLanguage()
+    {
+        Game game = Game.Get();
+        QuestData.Quest quest = game.CurrentQuest?.qd?.quest;
+        if (quest?.localizationDict == null) return game.currentLang;
+
+        return GetQuestLanguage(game.currentLang, game.fallbackLang, quest.localizationDict.GetLanguagesList(), quest.defaultLanguage);
+    }
+
+    // Same order in which DictionaryI18n picks the quest text language
+    public static string GetQuestLanguage(string appLanguage, string fallbackLanguage, ICollection<string> questLanguages, string questDefaultLanguage)
+    {
+        if (questLanguages.Contains(appLanguage)) return appLanguage;
+        if (!string.IsNullOrEmpty(fallbackLanguage) && questLanguages.Contains(fallbackLanguage)) return fallbackLanguage;
+        return questDefaultLanguage;
     }
 
     public static string GetLanguageCode(string language)

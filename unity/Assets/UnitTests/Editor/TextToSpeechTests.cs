@@ -57,6 +57,25 @@ namespace Valkyrie.UnitTests
         }
 
         [Test]
+        public void GetQuestLanguage_QuestHasAppLanguage_ReturnsAppLanguage()
+        {
+            Assert.AreEqual("Polish", TextToSpeech.GetQuestLanguage("Polish", "German", new[] { "English", "German", "Polish" }, "English"));
+        }
+
+        [Test]
+        public void GetQuestLanguage_QuestMissingAppLanguage_ReturnsFallbackLanguage()
+        {
+            Assert.AreEqual("German", TextToSpeech.GetQuestLanguage("Polish", "German", new[] { "English", "German" }, "English"));
+        }
+
+        [Test]
+        public void GetQuestLanguage_QuestMissingAppAndFallbackLanguage_ReturnsQuestDefaultLanguage()
+        {
+            Assert.AreEqual("French", TextToSpeech.GetQuestLanguage("Polish", "German", new[] { "French" }, "French"));
+            Assert.AreEqual("French", TextToSpeech.GetQuestLanguage("Polish", null, new[] { "French" }, "French"));
+        }
+
+        [Test]
         public void BuildSpeakCommand_EncodesSsmlAsBase64AndUsesIdAndLanguageCode()
         {
             string ssml = "<speak>Zażółć 'gęślą' jaźń; $evil</speak>";
