@@ -322,6 +322,11 @@ public class Game : MonoBehaviour
             uiScaler.UpdateResolution(uICanvas);
         }
 
+        if (TextToSpeech.IsEnabled())
+        {
+            TextToSpeech.PrepareVoice();
+        }
+
         // Bring up the Game selector
         gameSelect = new GameSelectionScreen();
     }

@@ -37,6 +37,10 @@ public static class PiperSpeech
 
     private static readonly Regex OUTPUT_FILE_ID = new Regex(@"speech_(\d+)\.wav\s*$");
 
+    private static readonly object requestLock = new object();
+    private static readonly Queue<string> pendingRequests = new Queue<string>();
+    private static bool synthesizing;
+
     private static Process process;
     private static StreamWriter input;
     private static string processLanguage;
@@ -62,16 +66,41 @@ public static class PiperSpeech
         host.StartCoroutine(InstallRoutine(language));
     }
 
-    // Returns false when Piper could not take the request
-    public static bool Speak(int id, string language, string speechText)
+    // Loads the voice model ahead of the first request
+    public static void WarmUp(string language)
     {
         try
         {
-            if (process == null || process.HasExited || processLanguage != language)
+            lock (requestLock)
             {
-                StartProcess(language);
+                EnsureProcess(language);
             }
-            input.WriteLine(BuildRequest(speechText, Path.Combine(Application.temporaryCachePath, "speech_" + id + ".wav")));
+        }
+        catch (Exception e)
+        {
+            ValkyrieDebug.Log("Warning: Piper text to speech could not start: " + e.Message);
+            Shutdown();
+        }
+    }
+
+    // Returns false when Piper could not take the request
+    public static bool Speak(int id, string language, string[] sentences)
+    {
+        try
+        {
+            lock (requestLock)
+            {
+                EnsureProcess(language);
+                string outputFile = Path.Combine(Application.temporaryCachePath, "speech_" + id + ".wav");
+                foreach (string sentence in sentences)
+                {
+                    pendingRequests.Enqueue(BuildRequest(sentence, outputFile));
+                }
+                if (!synthesizing)
+                {
+                    SendNextRequest();
+                }
+            }
             return true;
         }
         catch (Exception e)
@@ -79,6 +108,14 @@ public static class PiperSpeech
             ValkyrieDebug.Log("Warning: Piper text to speech failed: " + e.Message);
             Shutdown();
             return false;
+        }
+    }
+
+    public static void Cancel()
+    {
+        lock (requestLock)
+        {
+            pendingRequests.Clear();
         }
     }
 
@@ -184,6 +221,24 @@ public static class PiperSpeech
         done(true);
     }
 
+    private static void EnsureProcess(string language)
+    {
+        if (process == null || process.HasExited || processLanguage != language)
+        {
+            StartProcess(language);
+        }
+    }
+
+    // Sentences go to Piper one at a time so they play as soon as ready and a cancelled text delays the next one by one sentence at most
+    private static void SendNextRequest()
+    {
+        synthesizing = pendingRequests.Count > 0;
+        if (synthesizing)
+        {
+            input.WriteLine(pendingRequests.Dequeue());
+        }
+    }
+
     private static void StartProcess(string language)
     {
         Shutdown();
@@ -225,23 +280,43 @@ public static class PiperSpeech
         {
             ValkyrieDebug.Log("Warning: Unable to read synthesized speech: " + path + " Error: " + e.Message);
         }
-    }
 
-    private static void Shutdown()
-    {
         try
         {
-            if (process != null && !process.HasExited)
+            lock (requestLock)
             {
-                process.Kill();
+                if (input != null)
+                {
+                    SendNextRequest();
+                }
             }
         }
         catch (Exception e)
         {
-            ValkyrieDebug.Log("Warning: Could not stop Piper process: " + e.Message);
+            ValkyrieDebug.Log("Warning: Piper text to speech failed: " + e.Message);
         }
-        process = null;
-        input = null;
-        processLanguage = null;
+    }
+
+    private static void Shutdown()
+    {
+        lock (requestLock)
+        {
+            try
+            {
+                if (process != null && !process.HasExited)
+                {
+                    process.Kill();
+                }
+            }
+            catch (Exception e)
+            {
+                ValkyrieDebug.Log("Warning: Could not stop Piper process: " + e.Message);
+            }
+            process = null;
+            input = null;
+            processLanguage = null;
+            pendingRequests.Clear();
+            synthesizing = false;
+        }
     }
 }

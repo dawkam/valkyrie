@@ -76,6 +76,12 @@ namespace Valkyrie.UnitTests
         }
 
         [Test]
+        public void SplitSentences_SplitsAfterSentenceEndings()
+        {
+            Assert.AreEqual(new[] { "The door opens.", "Something waits!", "Run?Now…", "Go" }, TextToSpeech.SplitSentences("The door opens. Something waits! Run?Now… Go"));
+        }
+
+        [Test]
         public void TryReadWav_Pcm16WithExtraChunks_ReturnsSamples()
         {
             byte[] wav = BuildWav(new short[] { 0, 16384, -32768, 32767 }, 2, 16000, 18);

@@ -58,7 +58,7 @@ public static class TextToSpeech
 
     private static readonly object speechLock = new object();
     private static int requestId;
-    private static byte[] pendingSpeech;
+    private static readonly Queue<byte[]> pendingSpeech = new Queue<byte[]>();
 
     private static Process speechProcess;
     private static TextToSpeechNarrator narrator;
@@ -88,7 +88,7 @@ public static class TextToSpeech
             id = requestId;
         }
         string language = PrepareVoice();
-        if (PiperSpeech.IsInstalled(language) && PiperSpeech.Speak(id, language, speechText)) return;
+        if (PiperSpeech.IsInstalled(language) && PiperSpeech.Speak(id, language, SplitSentences(speechText))) return;
 
         Send(BuildSpeakCommand(id, language, BuildSsml(speechText)));
     }
@@ -102,6 +102,10 @@ public static class TextToSpeech
         }
         string language = GetLanguageCode(Game.Get().currentLang);
         PiperSpeech.Install(language, narrator);
+        if (PiperSpeech.IsInstalled(language))
+        {
+            PiperSpeech.WarmUp(language);
+        }
         return language;
     }
 
@@ -111,7 +115,7 @@ public static class TextToSpeech
         {
             if (id == requestId)
             {
-                pendingSpeech = wav;
+                pendingSpeech.Enqueue(wav);
             }
         }
     }
@@ -121,22 +125,21 @@ public static class TextToSpeech
         lock (speechLock)
         {
             requestId++;
-            pendingSpeech = null;
+            pendingSpeech.Clear();
         }
+        PiperSpeech.Cancel();
         if (narrator != null)
         {
             narrator.StopSpeaking();
         }
     }
 
-    // Returns the WAV audio of the latest request once synthesized, null otherwise
+    // Returns the next synthesized WAV part of the latest request, null when none is ready
     public static byte[] TakeSpeech()
     {
         lock (speechLock)
         {
-            byte[] speech = pendingSpeech;
-            pendingSpeech = null;
-            return speech;
+            return pendingSpeech.Count > 0 ? pendingSpeech.Dequeue() : null;
         }
     }
 
@@ -158,6 +161,11 @@ public static class TextToSpeech
             return code;
         }
         return LANGUAGE_CODES[ValkyrieConstants.DefaultLanguage];
+    }
+
+    public static string[] SplitSentences(string speechText)
+    {
+        return SENTENCE_END.Split(speechText);
     }
 
     public static string BuildSsml(string speechText)

@@ -31,7 +31,7 @@ public class TextToSpeechNarrator : MonoBehaviour
 
     void Update()
     {
-        byte[] wav = TextToSpeech.TakeSpeech();
+        byte[] wav = voice.isPlaying ? null : TextToSpeech.TakeSpeech();
         if (wav != null)
         {
             Play(wav);
@@ -51,6 +51,7 @@ public class TextToSpeechNarrator : MonoBehaviour
             ValkyrieDebug.Log("Warning: Text to speech returned unsupported audio.");
             return;
         }
+        if (samples.Length == 0) return;
 
         AudioClip clip = AudioClip.Create("speech", samples.Length / channels, channels, sampleRate, false);
         clip.SetData(samples, 0);
