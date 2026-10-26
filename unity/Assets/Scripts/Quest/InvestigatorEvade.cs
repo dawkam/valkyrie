@@ -45,6 +45,7 @@ public class InvestigatorEvade {
         game.CurrentQuest.log.Add(new Quest.LogEntry(text.Replace("\n", "\\n")));
 
         Draw();
+        TextToSpeech.Speak(text);
     }
 
     public void Draw()
@@ -54,6 +55,7 @@ public class InvestigatorEvade {
         ui.SetLocation(10, 0.5f, UIScaler.GetWidthUnits() - 20, 8);
         ui.SetText(text);
         new UIElementBorder(ui);
+        ReadAloudButton.Draw(UIScaler.GetWidthUnits() - 14.5f, 0.5f, text);
 
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-6f), 9, 12, 2);
@@ -65,7 +67,7 @@ public class InvestigatorEvade {
         else
         {
             ui.SetText(CommonStringKeys.FINISHED);
-            ui.SetButton(Destroyer.Dialog);
+            ui.SetButton(delegate { TextToSpeech.Stop(); Destroyer.Dialog(); });
             new UIElementBorder(ui);
         }
         ui.SetFontSize(UIScaler.GetMediumFont());

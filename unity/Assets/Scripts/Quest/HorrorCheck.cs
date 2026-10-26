@@ -48,6 +48,7 @@ public class HorrorCheck {
         ui.SetLocation(UIScaler.GetHCenter(-14), 0.5f, 28, 8);
         ui.SetText(text);
         new UIElementBorder(ui);
+        ReadAloudButton.Draw(UIScaler.GetHCenter(14.5f), 0.5f, text);
 
         game.CurrentQuest.log.Add(new Quest.LogEntry(text.Replace("\n", "\\n")));
 
@@ -55,9 +56,10 @@ public class HorrorCheck {
         ui.SetLocation(UIScaler.GetHCenter(-6f), 9, 12, 2);
         ui.SetText(CommonStringKeys.FINISHED);
         ui.SetFontSize(UIScaler.GetMediumFont());
-        ui.SetButton(Destroyer.Dialog);
+        ui.SetButton(delegate { TextToSpeech.Stop(); Destroyer.Dialog(); });
         new UIElementBorder(ui);
 
         MonsterDialogMoM.DrawMonster(m, true);
+        TextToSpeech.Speak(text);
     }
 }

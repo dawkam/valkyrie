@@ -66,6 +66,7 @@ public class InvestigatorAttack
         attackText = EventManager.OutputSymbolReplace(text.Translate().Replace("{0}", monster.monsterData.name.Translate()));
         Game.Get().CurrentQuest.log.Add(new Quest.LogEntry(attackText.Replace("\n", "\\n")));
         Attack();
+        TextToSpeech.Speak(attackText);
     }
 
     public void Attack()
@@ -76,6 +77,7 @@ public class InvestigatorAttack
         ui.SetLocation(10, 0.5f, UIScaler.GetWidthUnits() - 20, 8);
         ui.SetText(attackText);
         new UIElementBorder(ui);
+        ReadAloudButton.Draw(UIScaler.GetWidthUnits() - 14.5f, 0.5f, attackText);
 
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-6), 9, 12, 2);
@@ -87,7 +89,7 @@ public class InvestigatorAttack
         else
         {
             ui.SetText(CommonStringKeys.FINISHED);
-            ui.SetButton(Destroyer.Dialog);
+            ui.SetButton(delegate { TextToSpeech.Stop(); Destroyer.Dialog(); });
             new UIElementBorder(ui);
         }
         ui.SetFontSize(UIScaler.GetMediumFont());
