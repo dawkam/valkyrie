@@ -7,6 +7,8 @@ public class TextToSpeechNarrator : MonoBehaviour
     private const float MUSIC_VOLUME_WHILE_SPEAKING = 0.35f;
     private const float VOICE_VOLUME = 0.4f;
     private const AudioReverbPreset REVERB = AudioReverbPreset.StoneCorridor;
+    private const float REVERB_LEVEL_REDUCTION_MB = 900f;
+    private const float REVERB_DECAY_SCALE = 0.5f;
 
     private AudioSource voice;
     private bool musicLowered;
@@ -21,7 +23,10 @@ public class TextToSpeechNarrator : MonoBehaviour
     void Awake()
     {
         voice = gameObject.AddComponent<AudioSource>();
-        gameObject.AddComponent<AudioReverbFilter>().reverbPreset = REVERB;
+        AudioReverbFilter reverb = gameObject.AddComponent<AudioReverbFilter>();
+        reverb.reverbPreset = REVERB;
+        reverb.reverbLevel -= REVERB_LEVEL_REDUCTION_MB;
+        reverb.decayTime *= REVERB_DECAY_SCALE;
     }
 
     void Update()
