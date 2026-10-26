@@ -693,6 +693,9 @@ OFF,OFF
 EXPORT_LOG,Export Log
 ADVANCED_OPTIONS,Advanced Options
 VIEW_LOCK,Block automatic scenario camera movement
+READ_TEXT_ALOUD,Read text aloud
+READ_ALOUD,Read
+DOWNLOADING_NATURAL_VOICE,Downloading natural voice...
 
 LOADINGSCENARIOS,Loading scenarios...
 LOADINGCONTENTPACKS,Loading content packs...

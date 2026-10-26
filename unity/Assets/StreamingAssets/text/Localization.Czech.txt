@@ -694,6 +694,9 @@ OFF,Vypnuto
 EXPORT_LOG,Exportovat log
 ADVANCED_OPTIONS,Pokročilé možnosti
 VIEW_LOCK,Blokovat automatický pohyb kamery scénáře
+READ_TEXT_ALOUD,Předčítání textu
+READ_ALOUD,Přečíst
+DOWNLOADING_NATURAL_VOICE,Stahování přirozeného hlasu...
 
 LOADINGSCENARIOS,Načítání scénářů...
 LOADINGCONTENTPACKS,Načítání balíčků obsahu...

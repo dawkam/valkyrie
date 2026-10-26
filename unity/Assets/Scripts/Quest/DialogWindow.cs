@@ -59,6 +59,7 @@ public class DialogWindow {
         }
 
         DrawItem();
+        TextToSpeech.Speak(text);
     }
 
     public void CreateWindow()
@@ -73,6 +74,7 @@ public class DialogWindow {
         ui.SetLocation(UIScaler.GetHCenter(-14f), 0.5f, 28, offset);
         ui.SetText(text);
         new UIElementBorder(ui);
+        ReadAloudButton.Draw(UIScaler.GetHCenter(14.5f), 0.5f, text);
         offset += 1f;
 
         // Determine button size
@@ -150,6 +152,7 @@ public class DialogWindow {
         ui.SetLocation(UIScaler.GetHCenter(-14f), 0.5f, 28, offset);
         ui.SetText(text);
         new UIElementBorder(ui);
+        ReadAloudButton.Draw(UIScaler.GetHCenter(14.5f), 0.5f, text);
         offset += 1;
 
         ui = new UIElement();
@@ -285,6 +288,7 @@ public class DialogWindow {
     // Cancel cleans up
     public void onCancel()
     {
+        TextToSpeech.Stop();
         Destroyer.Dialog();
         Game.Get().CurrentQuest.eManager.currentEvent = null;
         // There may be a waiting event
@@ -297,6 +301,7 @@ public class DialogWindow {
         if (!checkHeroes()) return;
 
         Game game = Game.Get();
+        TextToSpeech.Stop();
         // Destroy this dialog to close
         Destroyer.Dialog();
 

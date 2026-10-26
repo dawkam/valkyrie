@@ -8,6 +8,7 @@ public class Destroyer
     // Destroy everything.  This still keeps game type, Valkyrie must be restarted to swap games
     public static void Destroy()
     {
+        TextToSpeech.Stop();
         Resources.UnloadUnusedAssets();
         ContentData.textureCache = null;
         // Clean up everything marked as 'dialog'

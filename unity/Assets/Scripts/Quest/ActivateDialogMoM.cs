@@ -36,6 +36,9 @@ public class ActivateDialogMoM : ActivateDialog
             ui.SetText(textKey);
             new UIElementBorder(ui);
             offset += 4.5f;
+
+            ReadAloudButton.Draw(UIScaler.GetWidthUnits() - 14.5f, 0.5f, textKey);
+            TextToSpeech.Speak(textKey);
         }
 
         ui = new UIElement();
@@ -74,6 +77,9 @@ public class ActivateDialogMoM : ActivateDialog
         ui.SetText(monster.currentActivation.masterActions.Replace("\\n", "\n"));
         new UIElementBorder(ui);
 
+        ReadAloudButton.Draw(UIScaler.GetWidthUnits() - 14.5f, 0.5f, monster.currentActivation.masterActions);
+        TextToSpeech.Speak(monster.currentActivation.masterActions);
+
         // Add this to the log
         Game.Get().CurrentQuest.log.Add(new Quest.LogEntry(monster.currentActivation.masterActions.Replace("\n", "\\n")));
 
@@ -110,6 +116,9 @@ public class ActivateDialogMoM : ActivateDialog
         ui.SetText(monster.currentActivation.move.Replace("\\n", "\n"));
         new UIElementBorder(ui);
 
+        ReadAloudButton.Draw(UIScaler.GetWidthUnits() - 14.5f, 0.5f, monster.currentActivation.move);
+        TextToSpeech.Speak(monster.currentActivation.move);
+
         // Add this to the log
         Game.Get().CurrentQuest.log.Add(new Quest.LogEntry(monster.currentActivation.move.Replace("\n", "\\n")));
 
@@ -127,6 +136,7 @@ public class ActivateDialogMoM : ActivateDialog
 
     override public void activated()
     {
+        TextToSpeech.Stop();
         Destroyer.Dialog();
         Game.Get().roundControl.MonsterActivated();
     }

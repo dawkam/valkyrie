@@ -77,6 +77,10 @@ public class ActivateDialog {
             activationText = monster.currentActivation.minionActions;
         }
 
+        string speechText = monster.currentActivation.effect + "\n" + activationText;
+        ReadAloudButton.Draw(UIScaler.GetWidthUnits() - 14.5f, 0.5f, speechText, Game.ACTIVATION);
+        TextToSpeech.Speak(speechText);
+
         // Create activation text box
         ui = new UIElement(Game.ACTIVATION);
         ui.SetLocation(10, offset, UIScaler.GetWidthUnits() - 20, 7);
@@ -119,6 +123,7 @@ public class ActivateDialog {
         // Disable if there is a menu open
         if (GameObject.FindGameObjectWithTag(Game.DIALOG) != null) return;
 
+        TextToSpeech.Stop();
         foreach (GameObject go in GameObject.FindGameObjectsWithTag(Game.ACTIVATION))
             Object.Destroy(go);
         Game.Get().roundControl.MonsterActivated();

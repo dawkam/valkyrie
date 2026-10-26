@@ -500,6 +500,9 @@ OFF,Wył.
 EXPORT_LOG,Eksportuj log
 ADVANCED_OPTIONS,Opcje Zaawansowane
 VIEW_LOCK,Zablokuj automatyczny ruch kamery w scenariuszu
+READ_TEXT_ALOUD,Czytanie na głos
+READ_ALOUD,Czytaj
+DOWNLOADING_NATURAL_VOICE,Pobieranie naturalnego głosu...
 
 LOADINGSCENARIOS,Wczytywanie scenariuszy...
 LOADINGCONTENTPACKS,Wczytywanie pakietów zawartości...

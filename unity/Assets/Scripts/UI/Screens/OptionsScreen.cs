@@ -29,6 +29,8 @@ namespace Assets.Scripts.UI.Screens
         private readonly StringKey OptionON = new StringKey("val", "ON");
         private readonly StringKey OptionOff = new StringKey("val", "OFF");
         private readonly StringKey ADVANCED_OPTIONS = new StringKey("val", "ADVANCED_OPTIONS");
+        private readonly StringKey READ_TEXT_ALOUD = new StringKey("val", "READ_TEXT_ALOUD");
+        private readonly StringKey DOWNLOADING_NATURAL_VOICE = new StringKey("val", "DOWNLOADING_NATURAL_VOICE");
 
         // Grid constants
         private const float LEFT_X = 2f;
@@ -77,6 +79,8 @@ namespace Assets.Scripts.UI.Screens
             CreateAudioElements();
 
             CreateResolutionAndFullScreenOptions();
+
+            CreateReadAloudElements();
 
             CreateAdvancedOptionsElements();
 
@@ -162,6 +166,45 @@ namespace Assets.Scripts.UI.Screens
                 new OptionsScreen();
             });
             new UIElementBorder(ui, isFs ? Color.white : Color.grey);
+        }
+
+        private void CreateReadAloudElements()
+        {
+            if (!TextToSpeech.IsSupported())
+                return;
+
+            float rightX = UIScaler.GetHCenter() + RIGHT_X_OFFSET;
+
+            UIElement ui = new UIElement();
+            ui.SetLocation(rightX, ROW2_Y, RIGHT_W, ROW_LABEL_H);
+            ui.SetText(READ_TEXT_ALOUD);
+            ui.SetFont(game.gameType.GetHeaderFont());
+            ui.SetFontSize(UIScaler.GetMediumFont());
+
+            bool isReadAloud = game.config.data.Get("UserConfig", TextToSpeech.CONFIG_KEY) == "1";
+
+            ui = new UIElement();
+            ui.SetLocation(rightX, ROW2_Y + ROW_LABEL_H, RIGHT_W, ROW_BTN_H);
+            ui.SetText(isReadAloud ? OptionON : OptionOff);
+            ui.SetButton(delegate
+            {
+                bool newState = !isReadAloud;
+                game.config.data.Add("UserConfig", TextToSpeech.CONFIG_KEY, newState ? "1" : "0");
+                game.config.Save();
+                if (newState)
+                    TextToSpeech.PrepareVoice();
+                new OptionsScreen();
+            });
+            new UIElementBorder(ui, isReadAloud ? Color.white : Color.grey);
+
+            if (PiperSpeech.IsDownloading())
+            {
+                ui = new UIElement();
+                ui.SetLocation(rightX, ROW2_Y + ROW_LABEL_H + ROW_BTN_H, RIGHT_W, 1.2f);
+                ui.SetText(DOWNLOADING_NATURAL_VOICE);
+                ui.SetFont(game.gameType.GetFont());
+                ui.SetFontSize(UIScaler.GetSmallFont());
+            }
         }
 
         private static void OpenResolutionSelection(Game game, List<Resolution> resolutions, int currentIndex)

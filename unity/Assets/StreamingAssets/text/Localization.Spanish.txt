@@ -526,6 +526,9 @@ OFF,Desactivado
 EXPORT_LOG,Exportar log
 ADVANCED_OPTIONS,Opciones Avanzadas
 VIEW_LOCK,Bloquear movimiento automático de cámara de escenario
+READ_TEXT_ALOUD,Lectura en voz alta
+READ_ALOUD,Leer
+DOWNLOADING_NATURAL_VOICE,Descargando voz natural...
 
 LOADINGSCENARIOS,Cargando escenarios...
 LOADINGCONTENTPACKS,Cargando paquetes de contenido...

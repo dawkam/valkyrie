@@ -466,6 +466,9 @@ OFF,Disattivo
 EXPORT_LOG,Esporta log
 ADVANCED_OPTIONS,Opzioni Avanzate
 VIEW_LOCK,Blocca movimento automatico telecamera scenario
+READ_TEXT_ALOUD,Lettura ad alta voce
+READ_ALOUD,Leggi
+DOWNLOADING_NATURAL_VOICE,Download della voce naturale...
 
 LOADINGSCENARIOS,Caricamento scenari...
 LOADINGCONTENTPACKS,Caricamento pacchetti di contenuti...

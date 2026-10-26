@@ -523,6 +523,9 @@ OFF,ВЫКЛ
 EXPORT_LOG,Экспорт журнала
 ADVANCED_OPTIONS,Дополнительные параметры
 VIEW_LOCK,Блокировать автоматическое движение камеры в сценариях
+READ_TEXT_ALOUD,Чтение вслух
+READ_ALOUD,Читать
+DOWNLOADING_NATURAL_VOICE,Загрузка естественного голоса...
 
 LOADINGSCENARIOS,Загрузка сценариев...
 LOADINGCONTENTPACKS,Загрузка пакетов контента...

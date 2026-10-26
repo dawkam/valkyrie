@@ -520,6 +520,9 @@ OFF,Aus
 EXPORT_LOG,Log exportieren
 ADVANCED_OPTIONS,Erweiterte Optionen
 VIEW_LOCK,Automatische Kamerabewegung in Szenarien blockieren
+READ_TEXT_ALOUD,Text vorlesen
+READ_ALOUD,Vorlesen
+DOWNLOADING_NATURAL_VOICE,Natürliche Stimme wird heruntergeladen...
 
 LOADINGSCENARIOS,Szenarien laden...
 LOADINGCONTENTPACKS,Inhaltspakete laden...

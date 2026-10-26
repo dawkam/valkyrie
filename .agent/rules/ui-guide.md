@@ -110,6 +110,14 @@ To show a button as unavailable (e.g. a feature not supported on the current pla
 - Use `BUTTON_BORDER_COLOR_INACTIVE` for the border
 - Do **not** call `SetButton(...)` — no callback means no interaction
 
+## Read aloud (text to speech)
+
+Quest text windows (`DialogWindow`, `InfoDialog`, `ActivateDialog`, `ActivateDialogMoM`) call `TextToSpeech.Speak(text)` once when opened, draw `ReadAloudButton.Draw(x, y, text, tag)` for replay, and call `TextToSpeech.Stop()` in their close handlers. A new window showing quest/story text should do the same. Do not call `Speak` from methods that redraw (e.g. quota +/-), or the text restarts on every click.
+- Windows only (`TextToSpeech.IsSupported()`), toggled by the `readAloud` UserConfig key in the Options screen; both calls are no-ops when disabled.
+- Speech is synthesized in a background `powershell -Command -` process with the WinRT `Windows.Media.SpeechSynthesis` API (System.Speech/SAPI can't see OneCore voices such as the Polish male "Adam"). SSML goes in base64, WAV comes back as `SPEECH <id> <base64>` on stdout, and `TextToSpeechNarrator` plays it through Unity with reverb and lowers the music. Do not switch to `-EncodedCommand`/`-ExecutionPolicy Bypass`, which antivirus tools flag.
+- Preferred engine is `PiperSpeech`: offline neural voices (Piper 2023.11.14-2 + pinned rhasspy/piper-voices commit), downloaded to `%APPDATA%\Valkyrie\TextToSpeech` when the option is enabled or a new language is used. Until installed (and for Chinese/Japanese, whose Piper voices need a newer engine) the Windows voice is used. A long-running `piper.exe --json-input` process takes `{"text","output_file"}` lines and prints each finished WAV path; the request id is in the file name.
+- Voice tuning is in constants: Piper speed/pauses and voice per language in `PiperSpeech`, Windows rate/pitch in `TextToSpeech`, reverb preset, narrator volume (fraction of the effects volume) and music level while speaking in `TextToSpeechNarrator`.
+
 ## Styling & resources
 - **Fonts**: Accessed via `Game.Get().gameType.GetFont()`.
 - **Colors**: Standard Unity `Color` structs. `Color.clear` is often used for invisible click targets.
