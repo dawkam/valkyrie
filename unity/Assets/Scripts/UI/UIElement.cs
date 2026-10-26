@@ -126,9 +126,10 @@ namespace Assets.Scripts.UI
         private static bool IsOnPaper(Transform parent)
         {
             if (paperSprite == null) return false;
-            foreach (UnityEngine.UI.Image image in parent.GetComponentsInParent<UnityEngine.UI.Image>())
+            for (Transform t = parent; t != null; t = t.parent)
             {
-                if (image.sprite == paperSprite) return true;
+                UnityEngine.UI.Image image = t.GetComponent<UnityEngine.UI.Image>();
+                if (image != null && image.sprite == paperSprite) return true;
             }
             return false;
         }

@@ -10,6 +10,7 @@ namespace Assets.Scripts.UI
         protected UnityEngine.UI.Image frame;
 
         private const float paperFrameThickness = 0.5f;
+        private static Sprite frameSprite;
 
         public UIElementBorder(UIElement element) : this(element, Color.white)
         {
@@ -33,7 +34,8 @@ namespace Assets.Scripts.UI
             GameObject frameObject = new GameObject("BorderFrame");
             frameObject.tag = element.GetTag();
             frame = frameObject.AddComponent<UnityEngine.UI.Image>();
-            frame.sprite = Resources.Load<Sprite>("Sprites/UI/Frame_outline_v2");
+            if (frameSprite == null) frameSprite = Resources.Load<Sprite>("Sprites/UI/Frame_outline_v2");
+            frame.sprite = frameSprite;
             frame.type = UnityEngine.UI.Image.Type.Sliced;
             frame.raycastTarget = false;
             frame.color = color;
