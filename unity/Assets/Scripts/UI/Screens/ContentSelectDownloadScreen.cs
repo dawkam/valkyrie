@@ -85,6 +85,7 @@ namespace Assets.Scripts.UI.Screens
                 // scroll area
                 scrollArea = new UIElementScrollVertical(Game.CONTENTPACKLIST);
                 scrollArea.SetLocation(1, 5, UIScaler.GetWidthUnits() - 2f, UIScaler.GetHeightUnits() - 6f);
+                scrollArea.KeepDarkBackground();
                 new UIElementBorder(scrollArea, Color.grey);
             }
 

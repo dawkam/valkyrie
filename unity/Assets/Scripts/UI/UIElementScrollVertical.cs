@@ -69,6 +69,12 @@ namespace Assets.Scripts.UI
             scrollBarTrans.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, UIScaler.GetPixelsPerUnit());
         }
 
+        public void SetScrollBarColor(Color color)
+        {
+            scrollBarHandle.GetComponent<UnityEngine.UI.Image>().color = color;
+            scrollBar.AddComponent<UnityEngine.UI.Image>().color = new Color(color.r, color.g, color.b, 0.15f);
+        }
+
         public Transform GetScrollTransform()
         {
             return scrollArea.transform;

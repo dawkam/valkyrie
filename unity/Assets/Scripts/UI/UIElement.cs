@@ -18,7 +18,20 @@ namespace Assets.Scripts.UI
 
         protected string tag = Game.DIALOG;
 
-        protected static float textPaddingDefault = 0.25f;
+        protected static float textPaddingDefault = 0.5f;
+
+        public static readonly Color defaultBGColor = new Color(0, 0, 0, (float)0.9);
+        public static readonly Color paperTextColor = new Color(0.14f, 0.08f, 0.03f);
+        public static readonly Color paperLinkColor = new Color(0f, 0.3f, 0.35f);
+        public static readonly Color paperGreenColor = new Color(0.12f, 0.38f, 0.1f);
+        public static readonly Color paperRedColor = new Color(0.55f, 0.07f, 0.04f);
+        public static readonly Color paperRowColor = new Color(0.14f, 0.08f, 0.03f, 0.12f);
+        public static readonly Color paperSelectedRowColor = new Color(0.14f, 0.08f, 0.03f, 0.4f);
+        protected bool paperText = false;
+        protected bool paperBG = false;
+        protected bool onPaper = false;
+        protected bool keepDarkBackground = false;
+        private static Sprite paperSprite;
 
         protected float textPadding = textPaddingDefault;
 
@@ -99,9 +112,25 @@ namespace Assets.Scripts.UI
             bg.tag = tag;
             UnityEngine.UI.Image uiImage = bg.AddComponent<UnityEngine.UI.Image>();
             // default color
-            uiImage.color = new Color(0, 0, 0, (float)0.9);
+            uiImage.color = defaultBGColor;
             if (parent == null) parent = Game.Get().uICanvas.transform;
             bg.transform.SetParent(parent);
+            if (IsOnPaper(parent))
+            {
+                onPaper = true;
+                paperText = true;
+                uiImage.color = Color.clear;
+            }
+        }
+
+        private static bool IsOnPaper(Transform parent)
+        {
+            if (paperSprite == null) return false;
+            foreach (UnityEngine.UI.Image image in parent.GetComponentsInParent<UnityEngine.UI.Image>())
+            {
+                if (image.sprite == paperSprite) return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -111,7 +140,77 @@ namespace Assets.Scripts.UI
         /// Can also be used to change image render color, is reset to white when image is set.</remarks>
         public void SetBGColor(Color c)
         {
+            if (paperBG && IsDarkBackground(c)) c = Color.white;
             bg.GetComponent<UnityEngine.UI.Image>().color = c;
+        }
+
+        public static bool IsDarkBackground(Color c)
+        {
+            return c.a >= 0.5f && Mathf.Max(c.r, c.g, c.b) < 0.2f;
+        }
+
+        /// <summary>
+        /// True if the element still has a plain background that can be replaced by paper.</summary>
+        public bool CanUsePaperBackground()
+        {
+            if (keepDarkBackground) return false;
+            UnityEngine.UI.Image background = bg.GetComponent<UnityEngine.UI.Image>();
+            if (background.sprite != null) return false;
+            return IsDarkBackground(background.color) || (onPaper && background.color == Color.clear);
+        }
+
+        /// <summary>
+        /// Keep the plain dark background and line border, for containers whose content has its own styling.</summary>
+        public void KeepDarkBackground()
+        {
+            keepDarkBackground = true;
+        }
+
+        /// <summary>
+        /// Use a paper image as background, dark background colors set later are ignored.</summary>
+        public void SetPaperBackground()
+        {
+            paperBG = true;
+            SetImage(GetPaperSprite());
+            SetPaperText();
+        }
+
+        private static Sprite GetPaperSprite()
+        {
+            if (paperSprite != null) return paperSprite;
+            Texture2D paper = Resources.Load<Texture2D>("Sprites/UI/base-paper-1");
+            // Crop the dark outer edge of the source image
+            Rect inner = new Rect(paper.width * 0.025f, paper.height * 0.025f, paper.width * 0.95f, paper.height * 0.95f);
+            paperSprite = Sprite.Create(paper, inner, Vector2.zero, 1);
+            return paperSprite;
+        }
+
+        /// <summary>
+        /// Plain text label placed on top of a paper panel.</summary>
+        public void SetPaperLabel()
+        {
+            SetBGColor(Color.clear);
+            SetPaperText();
+        }
+
+        /// <summary>
+        /// Switch white text to dark brown so it is readable on a paper background.</summary>
+        public void SetPaperText()
+        {
+            paperText = true;
+            if (text == null) return;
+            UnityEngine.UI.Text uiText = text.GetComponent<UnityEngine.UI.Text>();
+            uiText.color = PaperTextColor(uiText.color);
+        }
+
+        protected Color PaperTextColor(Color textColor)
+        {
+            if (!paperText) return textColor;
+            if (textColor == Color.white) return paperTextColor;
+            if (textColor == Color.cyan) return paperLinkColor;
+            if (textColor == Color.green) return paperGreenColor;
+            if (textColor == Color.red) return paperRedColor;
+            return textColor;
         }
 
         /// <summary>
@@ -331,7 +430,7 @@ namespace Assets.Scripts.UI
                 }
             }
             uiText = text.GetComponent<UnityEngine.UI.Text>();
-            uiText.color = textColor;
+            uiText.color = PaperTextColor(textColor);
             if (textColor.Equals(Color.black))
             {
                 uiText.material = (Material)Resources.Load("Fonts/FontMaterial");

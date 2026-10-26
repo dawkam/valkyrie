@@ -24,6 +24,13 @@ The UI system is built upon a few key classes located in `Assets/Scripts/UI`.
     -   `SetImage(texture)`: Sets the background image.
     -   `SetBGColor(color)`: Sets background color.
 
+### UIElementBorder
+`new UIElementBorder(element)` on an element with a near-black background (`UIElement.IsDarkBackground`) turns it into a paper panel (`Resources/Sprites/UI/base-paper-1.png` + sliced `Frame_outline_v2.png`). Call `SetLocation` before it (frame thickness uses the size). Elements with an image or a light `SetBGColor` keep the old thin line border.
+- On paper, white text becomes `UIElement.paperTextColor` cyan/green/red become `UIElement.paperLinkColor`/`paperGreenColor`/`paperRedColor`; dark `SetBGColor` calls are ignored, light ones tint the paper.
+- Elements created as children of a paper element (e.g. inside a bordered scroll area) start transparent with paper text automatically.
+- Call `KeepDarkBackground()` before the border on containers whose rows have their own styling (quest list, content pack list). Rows on paper use `UIElement.paperRowColor` / `paperSelectedRowColor` bands with `paperTextColor` text (see hero/class selection).
+- Elements placed on top of a paper panel as siblings (absolute position) are not detected: call `SetPaperLabel()` on titles/labels, or they render as black boxes.
+
 ### UIElementEditable
 Inherits from `UIElement`. Provides a text input field.
 - **Usage**: User input forms.

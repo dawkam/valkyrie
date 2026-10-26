@@ -46,13 +46,13 @@ public class HeroSelection {
             ui = new UIElement(Game.HEROSELECT, scrollArea.GetScrollTransform());
             if (left)
             {
-                ui.SetLocation(3.25f, offset + 1.5f, UIScaler.GetWidthUnits() - 19, 1.5f);
+                ui.SetLocation(3.25f, offset + 1.5f, UIScaler.GetWidthUnits() - 16, 1.5f);
             }
             else
             {
                 ui.SetLocation(7.75f, offset + 1.5f, UIScaler.GetWidthUnits() - 18, 1.5f);
             }
-            ui.SetBGColor(Color.white);
+            ui.SetBGColor(UIElement.paperRowColor);
             ui.SetButton(delegate { Select(hero); });
             buttons[hero].Add(ui);
 
@@ -78,8 +78,7 @@ public class HeroSelection {
             {
                 ui.SetLocation(8.75f, offset + 1.5f, UIScaler.GetWidthUnits() - 20, 1.5f);
             }
-            ui.SetBGColor(Color.white);
-            ui.SetText(game.cd.Get<HeroData>(hero).name, Color.black);
+            ui.SetText(game.cd.Get<HeroData>(hero).name, UIElement.paperTextColor);
             ui.SetTextAlignment(TextAnchor.MiddleLeft);
             ui.SetFontSize(ui.GetText().Length > LARGE_FONT_LIMIT ? UIScaler.GetSmallFont() : UIScaler.GetMediumFont());
             ui.SetButton(delegate { Select(hero); });
@@ -114,10 +113,7 @@ public class HeroSelection {
         {
             if (h.heroData == null)
             {
-                foreach (UIElement ui in buttons[name])
-                {
-                    ui.SetBGColor(new Color(0.4f, 0.4f, 0.4f));
-                }
+                SetSelected(name, true);
                 h.heroData = hData;
                 game.heroCanvas.UpdateImages();
                 return;
@@ -129,19 +125,22 @@ public class HeroSelection {
     {
         foreach (KeyValuePair<string, List<UIElement>> kv in buttons)
         {
-            Color c = Color.white;
+            bool selected = false;
             foreach (Quest.Hero h in Game.Get().CurrentQuest.heroes)
             {
                 if (h.heroData != null && h.heroData.sectionName.Equals(kv.Key))
                 {
-                    c = new Color(0.4f, 0.4f, 0.4f);
+                    selected = true;
                 }
             }
-
-            foreach (UIElement ui in kv.Value)
-            {
-                ui.SetBGColor(c);
-            }
+            SetSelected(kv.Key, selected);
         }
+    }
+
+    // buttons per hero: row band, portrait, name
+    private void SetSelected(string hero, bool selected)
+    {
+        buttons[hero][0].SetBGColor(selected ? UIElement.paperSelectedRowColor : UIElement.paperRowColor);
+        buttons[hero][1].SetBGColor(selected ? new Color(0.4f, 0.4f, 0.4f) : Color.white);
     }
 }

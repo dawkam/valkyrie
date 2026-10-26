@@ -30,6 +30,7 @@ public class SkillWindow
         ui.SetLocation(UIScaler.GetHCenter(-14), 1, 28, 3);
         StringKey title = new StringKey("val", "SELECT_SKILLS");
         ui.SetText(title);
+        ui.SetPaperLabel();
         ui.SetFont(game.gameType.GetHeaderFont());
 
         float titleWidth = ui.GetStringWidth(title, UIScaler.GetLargeFont(), game.gameType.GetHeaderFont());

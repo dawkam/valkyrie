@@ -119,6 +119,7 @@ namespace Assets.Scripts.UI
             ui = new UIElement();
             ui.SetLocation(UIScaler.GetHCenter(-10), 0, 20, 1);
             ui.SetText(_title);
+            ui.SetPaperLabel();
 
             // Search Box
             searchUI = new UIElementSearchBox("", null);

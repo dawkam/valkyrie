@@ -55,6 +55,7 @@ public class PuzzleSlideWindow
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(6.5f), 3, 7, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.SKILL));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();
@@ -66,6 +67,7 @@ public class PuzzleSlideWindow
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(6.5f), 12.5f, 7, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.MOVES));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();
@@ -77,6 +79,7 @@ public class PuzzleSlideWindow
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(6.5f), 17, 7, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.TOTAL_MOVES));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();

@@ -90,6 +90,8 @@ namespace Assets.Scripts.UI.Screens
         Dictionary<string, bool> langs_selected = null;
         bool filter_missing_expansions = false;
         int filter_players = 0;
+        const float FILTER_POPUP_WIDTH = 42f;
+        const float FILTER_POPUP_MARGIN = 3f;
 
         // sort options
 
@@ -324,51 +326,58 @@ namespace Assets.Scripts.UI.Screens
             if (sortOptionsPopup != null || filtersPopup != null)
                 return;
 
-            // popup background
             filtersPopup = new UIElement();
-            filtersPopup.SetLocation(UIScaler.GetHCenter(-21), 3, 42, 24);
-            filtersPopup.SetBGColor(Color.black);
+            filtersPopup.SetLocation(UIScaler.GetHCenter(-FILTER_POPUP_WIDTH / 2), 3, FILTER_POPUP_WIDTH, 21);
+            filtersPopup.SetBGColor(new Color(0.02f, 0.02f, 0.02f, 0.97f));
             new UIElementBorder(filtersPopup);
 
-            // Title
             UIElement ui = new UIElement(filtersPopup.GetTransform());
-            ui.SetLocation(11, 2, 20, 3);
+            ui.SetLocation(FILTER_POPUP_MARGIN, 1, FILTER_POPUP_WIDTH - 2 * FILTER_POPUP_MARGIN, 3);
             ui.SetText(FILTER_TITLE);
+            ui.SetPaperLabel();
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetTextAlignment(TextAnchor.MiddleCenter);
             ui.SetFontSize(UIScaler.GetLargeFont());
 
-            // List of flags
-            ui = new UIElement(filtersPopup.GetTransform());
-            ui.SetLocation(6, 9, 30, 2);
-            ui.SetText(FILTER_SELECT_LANG);
-            ui.SetFont(game.gameType.GetHeaderFont());
-            ui.SetFontSize(UIScaler.GetMediumFont());
+            DrawFilterDivider(4.5f);
 
+            DrawFilterRowLabel(FILTER_SELECT_LANG, 5.5f);
             DrawFlags();
 
-            // Missing expansions checkbox
-            filter_missing_expansions_text = new UIElement(filtersPopup.GetTransform());
-            filter_missing_expansions_text.SetLocation(2, 15, 38, 2);
-            if (filter_missing_expansions)
-                filter_missing_expansions_text.SetText(FILTER_MISSING_EXPANSIONS_ON);
-            else
-                filter_missing_expansions_text.SetText(FILTER_MISSING_EXPANSIONS_OFF);
-            filter_missing_expansions_text.SetFont(game.gameType.GetHeaderFont());
-            filter_missing_expansions_text.SetFontSize(UIScaler.GetMediumFont());
+            DrawFilterDivider(11);
+
+            filter_missing_expansions_text = DrawFilterRowLabel(filter_missing_expansions ? FILTER_MISSING_EXPANSIONS_ON : FILTER_MISSING_EXPANSIONS_OFF, 12);
             filter_missing_expansions_text.SetButton(delegate { SetFilterMissingExpansions(); });
 
-            DrawPlayersFilter();
+            DrawPlayersFilter(14.5f);
 
-            // OK button closes popup and refresh quest list
             ui = new UIElement(filtersPopup.GetTransform());
-            ui.SetLocation(18, 20, 6, 2);
+            ui.SetLocation((FILTER_POPUP_WIDTH - 8) / 2, 18, 8, 2);
             ui.SetText(CommonStringKeys.OK);
-            ui.SetBGColor(new Color(0.03f, 0.0f, 0f));
+            ui.SetBGColor(new Color(0.15f, 0.03f, 0.03f));
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetFontSize(UIScaler.GetMediumFont());
             ui.SetButton(delegate { ApplyPlayersFilter(); filtersPopup.Destroy(); filtersPopup = null; ReloadQuestList(); });
             new UIElementBorder(ui);
+        }
+
+        private UIElement DrawFilterRowLabel(StringKey label, float y, float reservedRight = 0)
+        {
+            UIElement ui = new UIElement(filtersPopup.GetTransform());
+            ui.SetLocation(FILTER_POPUP_MARGIN, y, FILTER_POPUP_WIDTH - 2 * FILTER_POPUP_MARGIN - reservedRight, 2);
+            ui.SetText(label);
+            ui.SetPaperLabel();
+            ui.SetTextAlignment(TextAnchor.MiddleLeft);
+            ui.SetFont(game.gameType.GetHeaderFont());
+            ui.SetFontSize(UIScaler.GetMediumFont());
+            return ui;
+        }
+
+        private void DrawFilterDivider(float y)
+        {
+            UIElement ui = new UIElement(filtersPopup.GetTransform());
+            ui.SetLocation(FILTER_POPUP_MARGIN, y, FILTER_POPUP_WIDTH - 2 * FILTER_POPUP_MARGIN, 0.06f);
+            ui.SetBGColor(new Color(UIElement.paperTextColor.r, UIElement.paperTextColor.g, UIElement.paperTextColor.b, 0.4f));
         }
 
         private void SetFilterMissingExpansions()
@@ -390,19 +399,14 @@ namespace Assets.Scripts.UI.Screens
             }
         }
 
-        private void DrawPlayersFilter()
+        private void DrawPlayersFilter(float y)
         {
-            const float y_offset = 17.5f;
+            const float input_width = 5;
 
-            UIElement ui = new UIElement(filtersPopup.GetTransform());
-            ui.SetLocation(2, y_offset, 16, 2);
-            ui.SetText(FILTER_PLAYERS);
-            ui.SetTextAlignment(TextAnchor.MiddleLeft);
-            ui.SetFont(game.gameType.GetHeaderFont());
-            ui.SetFontSize(UIScaler.GetMediumFont());
+            DrawFilterRowLabel(FILTER_PLAYERS, y, input_width + 1);
 
             filter_players_input = new UIElementEditable(filtersPopup.GetTransform());
-            filter_players_input.SetLocation(18, y_offset, 5, 2);
+            filter_players_input.SetLocation(FILTER_POPUP_WIDTH - FILTER_POPUP_MARGIN - input_width, y, input_width, 2);
             filter_players_input.SetText(PlayersFilterText());
             filter_players_input.SetFontSize(UIScaler.GetMediumFont());
             filter_players_input.SetSingleLine();
@@ -492,9 +496,8 @@ namespace Assets.Scripts.UI.Screens
             const float flag_size = 1.7f;
             const float flag_spacing = 0.3f;
             float totalFlagsWidth = flagCount * flag_size + (flagCount - 1) * flag_spacing;
-            float popupWidth = 42f;
-            float x_offset = (popupWidth - totalFlagsWidth) / 2f;
-            float y_offset = 11f;
+            float x_offset = (FILTER_POPUP_WIDTH - totalFlagsWidth) / 2f;
+            float y_offset = 8f;
 
             foreach (KeyValuePair<string, bool> k in langs_selected)
             {
@@ -586,6 +589,7 @@ namespace Assets.Scripts.UI.Screens
             UIElement ui = new UIElement(sortOptionsPopup.GetTransform());
             ui.SetLocation(11, 1.5f, 20, 3);
             ui.SetText(SORT_TITLE);
+            ui.SetPaperLabel();
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetTextAlignment(TextAnchor.MiddleCenter);
             ui.SetFontSize(UIScaler.GetLargeFont());
@@ -594,6 +598,7 @@ namespace Assets.Scripts.UI.Screens
             ui = new UIElement(sortOptionsPopup.GetTransform());
             ui.SetLocation(6, 6, 30, 2);
             ui.SetText(SORT_SELECT_CRITERIA);
+            ui.SetPaperLabel();
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetTextAlignment(TextAnchor.MiddleCenter);
             ui.SetFontSize(UIScaler.GetMediumFont());
@@ -604,6 +609,7 @@ namespace Assets.Scripts.UI.Screens
             ui = new UIElement(sortOptionsPopup.GetTransform());
             ui.SetLocation(6, 14, 30, 2);
             ui.SetText(SORT_SELECT_ORDER);
+            ui.SetPaperLabel();
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetTextAlignment(TextAnchor.MiddleCenter);
             ui.SetFontSize(UIScaler.GetMediumFont());
@@ -957,6 +963,7 @@ namespace Assets.Scripts.UI.Screens
             // scroll area
             scrollArea = new UIElementScrollVertical(Game.QUESTLIST);
             scrollArea.SetLocation(1, 5, UIScaler.GetWidthUnits() - 2f, UIScaler.GetHeightUnits() - 6f);
+            scrollArea.KeepDarkBackground();
             new UIElementBorder(scrollArea, Color.grey);
 
             // Fix Z-order: Put scroll area behind all other UI elements (Header, Buttons) to prevent text leaking over them
@@ -1601,6 +1608,7 @@ namespace Assets.Scripts.UI.Screens
             ui = new UIElement(Game.DIALOG);
             ui.SetLocation(UIScaler.GetHCenter(-(dialogWidth - 1) / 2), UIScaler.GetVCenter(-dialogHeight / 2 + 1f), dialogWidth - 1, headerHeight);
             ui.SetText(headerText);
+            ui.SetPaperLabel();
             ui.SetTextAlignment(TextAnchor.MiddleCenter);
             ui.SetFontSize(UIScaler.GetMediumFont());
 
@@ -1608,6 +1616,7 @@ namespace Assets.Scripts.UI.Screens
             ui = new UIElement(Game.DIALOG);
             ui.SetLocation(UIScaler.GetHCenter(-(dialogWidth - 1) / 2), UIScaler.GetVCenter(-dialogHeight / 2 + 1f + headerHeight), dialogWidth - 1, textHeight);
             ui.SetText(fullText);
+            ui.SetPaperLabel();
             ui.SetTextAlignment(TextAnchor.MiddleCenter);
             ui.SetFontSize(UIScaler.GetMediumFont());
         }

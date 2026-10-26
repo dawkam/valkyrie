@@ -68,6 +68,7 @@ public class PuzzleTowerWindow : IUpdateListener
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-5), 18, 7, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.SKILL));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();
@@ -79,6 +80,7 @@ public class PuzzleTowerWindow : IUpdateListener
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-11f), 20.5f, 6, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.MOVES));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();
@@ -90,6 +92,7 @@ public class PuzzleTowerWindow : IUpdateListener
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-2f), 20.5f, 10, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.TOTAL_MOVES));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();

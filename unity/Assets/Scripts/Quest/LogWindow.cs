@@ -31,28 +31,27 @@ public class LogWindow
 
         Game game = Game.Get();
         game.logWindow = this;
-        // white background because font rendering is broken
         UIElement ui = new UIElement(Game.LOGS);
-        ui.SetLocation(textStart, 0.5f, textWidth, 24.5f);
-        ui.SetBGColor(Color.white);
-        ui = new UIElement(Game.LOGS);
-        ui.SetLocation(textStart + textWidth, 0.5f, 1, 24.5f);
+        ui.SetLocation(textStart, 0.5f, textWidth + 1, 24.5f);
+        new UIElementBorder(ui);
 
+        // inset inside the paper frame
         UIElementScrollVertical scrollArea = new UIElementScrollVertical(Game.LOGS);
-        scrollArea.SetLocation(textStart, 0.5f, textWidth + 1, 24.5f);
+        scrollArea.SetLocation(textStart + 0.5f, 1, textWidth, 23.5f);
         scrollArea.SetBGColor(Color.clear);
-        new UIElementBorder(scrollArea);
+        scrollArea.SetScrollBarColor(UIElement.paperTextColor);
 
+        float entryWidth = textWidth - 1;
         float offset = 0.5f;
         foreach (Quest.LogEntry e in game.CurrentQuest.log)
         {
             string entry = e.GetEntry(developerToggle).Trim('\n');
             if (entry.Length == 0) continue;
             ui = new UIElement(scrollArea.GetScrollTransform());
-            float height = ui.GetStringHeight(entry, textWidth);
-            ui.SetLocation(0, offset, textWidth, height);
-            ui.SetText(entry, Color.black);
-            ui.SetBGColor(Color.white);
+            float height = ui.GetStringHeight(entry, entryWidth);
+            ui.SetLocation(0, offset, entryWidth, height);
+            ui.SetText(entry, UIElement.paperTextColor);
+            ui.SetBGColor(Color.clear);
 
             offset += height;
         }

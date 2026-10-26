@@ -102,7 +102,7 @@ namespace Assets.Scripts.UI.Screens
 
                 ui = new UIElement(Game.HEROSELECT);
                 ui.SetLocation(xOffset + 1, yStart + 0.5f, 7, 4);
-                ui.SetText(classData.name, Color.black);
+                ui.SetText(classData.name, UIElement.paperTextColor);
                 if (ui.GetText().Length > LARGE_FONT_LIMIT)
                 {
                     ui.SetFontSize(UIScaler.GetSmallFont());
@@ -112,8 +112,7 @@ namespace Assets.Scripts.UI.Screens
                     ui.SetFontSize(UIScaler.GetMediumFont());
                 }
                 ui.SetButton(delegate { Select(hero, hybridClass); });
-                ui.SetBGColor(new Color(0, 0.7f, 0));
-                new UIElementBorder(ui, Color.black);
+                ui.SetBGColor(UIElement.paperSelectedRowColor);
 
                 yStart += 5;
             }
@@ -154,21 +153,17 @@ namespace Assets.Scripts.UI.Screens
                 }
 
                 ui = new UIElement(Game.HEROSELECT, scrollArea[hero].GetScrollTransform());
-                ui.SetLocation(0.25f, yOffset, 7, 4);
+                ui.SetLocation(0.5f, yOffset, 6.5f, 4);
                 if (available)
                 {
-                    ui.SetBGColor(Color.white);
+                    ui.SetBGColor(UIElement.paperRowColor);
                     ui.SetButton(delegate { Select(hero, className); });
                 }
-                else
+                else if (pick)
                 {
-                    ui.SetBGColor(new Color(0.2f, 0.2f, 0.2f));
-                    if (pick)
-                    {
-                        ui.SetBGColor(new Color(0, 0.7f, 0));
-                    }
+                    ui.SetBGColor(UIElement.paperSelectedRowColor);
                 }
-                ui.SetText(cd.name, Color.black);
+                ui.SetText(cd.name, available || pick ? UIElement.paperTextColor : Color.grey);
                 if (ui.GetText().Length > LARGE_FONT_LIMIT)
                 {
                     ui.SetFontSize(UIScaler.GetSmallFont());

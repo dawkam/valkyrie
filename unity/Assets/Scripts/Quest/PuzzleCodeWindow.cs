@@ -98,6 +98,7 @@ public class PuzzleCodeWindow
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(6f), 1.5f, 7, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.SKILL));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();
@@ -156,6 +157,7 @@ public class PuzzleCodeWindow
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-11f), 20f, 6, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.MOVES));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();
@@ -167,6 +169,7 @@ public class PuzzleCodeWindow
         ui = new UIElement();
         ui.SetLocation(UIScaler.GetHCenter(-2f), 20f, 10, 2);
         ui.SetText(new StringKey("val","X_COLON",CommonStringKeys.TOTAL_MOVES));
+        ui.SetPaperLabel();
         ui.SetFontSize(UIScaler.GetMediumFont());
 
         ui = new UIElement();

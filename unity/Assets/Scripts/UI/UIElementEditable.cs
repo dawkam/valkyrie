@@ -76,7 +76,7 @@ namespace Assets.Scripts.UI
         public void SetColor(Color textColor)
         {
             UnityEngine.UI.Text uiText = text.GetComponent<UnityEngine.UI.Text>();
-            uiText.color = textColor;
+            uiText.color = PaperTextColor(textColor);
             if (textColor.Equals(Color.black))
             {
                 uiText.material = (Material)Resources.Load("Fonts/FontMaterial");

@@ -24,14 +24,16 @@ public class InventoryWindowMoM
 
         // Add a title to the page
         ui = new UIElement();
-        ui.SetLocation(UIScaler.GetHCenter(-6), 1, 12, 3);
+        ui.SetLocation(UIScaler.GetHCenter(-17), 1.5f, 34, 3);
+        ui.SetPaperLabel();
         ui.SetText(new StringKey("val", "ITEMS"));
         ui.SetFont(game.gameType.GetHeaderFont());
         ui.SetFontSize(UIScaler.GetLargeFont());
 
         UIElementScrollHorizontal scrollArea = new UIElementScrollHorizontal();
         scrollArea.SetLocation(UIScaler.GetHCenter(-17), 5, 34, 14);
-        new UIElementBorder(scrollArea);
+        scrollArea.SetBGColor(Color.clear);
+        scrollArea.SetScrollBarColor(UIElement.paperTextColor);
 
         float xOffset = 1;
 
@@ -47,8 +49,8 @@ public class InventoryWindowMoM
             ui = new UIElement(scrollArea.GetScrollTransform());
             ui.SetLocation(xOffset, 9, 8, 3);
             ui.SetButton(delegate { Inspect(tmp); });
-            ui.SetText(itemData.name, Color.black);
-            ui.SetBGColor(Color.white);
+            ui.SetText(itemData.name, UIElement.paperTextColor);
+            ui.SetBGColor(Color.clear);
 
             Texture2D itemTex = ContentData.FileToTexture(itemData.image);
             if (itemTex != null)

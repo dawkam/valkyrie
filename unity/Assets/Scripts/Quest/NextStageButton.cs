@@ -116,18 +116,35 @@ public class NextStageButton
         ui.SetFontStyle(FontStyle.Italic);
 
         // Next phase button
-        // Tweak border size so that arrow is centered, should be changed if using another character or picture
         ui = new UIElement(Game.UIPHASE);
         ui.SetLocation(UIScaler.GetRight(-4f), UIScaler.GetBottom(-2.5f), 3f, 2.25f);
-        new UIElementBorder(ui);
-        // make button slightly smaller so it does not overlap border
-        ui = new UIElement(Game.UIPHASE);
-        ui.SetLocation(UIScaler.GetRight(-3.95f), UIScaler.GetBottom(-2.5f), 2.9f, 1.65f);
-        ui.SetText(CommonStringKeys.TAB);
-        ui.SetFont(Game.Get().gameType.GetHeaderFont());
-        ui.SetFontSize(UIScaler.GetLargeFont());
         ui.SetButton(Next);
-        ui.SetBGColor(bgColor);
+        new UIElementBorder(ui);
+        ui = new UIElement(Game.UIPHASE);
+        ui.SetLocation(UIScaler.GetRight(-3f), UIScaler.GetBottom(-1.875f), 1f, 1f);
+        ui.SetImage(GetArrowSprite());
+        ui.SetBGColor(UIElement.paperTextColor);
+        ui.SetButton(Next);
+    }
+
+    private static Sprite arrowSprite;
+
+    private static Sprite GetArrowSprite()
+    {
+        if (arrowSprite != null) return arrowSprite;
+        const int size = 128;
+        Texture2D texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                bool inside = x >= size * 0.15f && Mathf.Abs(y - size * 0.5f) <= (size * 0.85f - x) * 0.6f;
+                texture.SetPixel(x, y, inside ? Color.white : Color.clear);
+            }
+        }
+        texture.Apply();
+        arrowSprite = Sprite.Create(texture, new Rect(0, 0, size, size), Vector2.zero, 1);
+        return arrowSprite;
     }
 
     // Button pressed

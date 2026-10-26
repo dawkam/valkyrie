@@ -76,6 +76,7 @@ namespace Assets.Scripts.UI.Screens
                     ui = new UIElement();
                     ui.SetLocation(UIScaler.GetHCenter(-12), offset + 0.5f, 10, 2);
                     ui.SetText(name);
+                    ui.SetPaperLabel();
                     ui.SetTextAlignment(TextAnchor.MiddleLeft);
                     ui.SetFontSize(UIScaler.GetMediumFont());
                     ui.SetButton(delegate { Select(tmp); });
@@ -83,6 +84,7 @@ namespace Assets.Scripts.UI.Screens
                     ui = new UIElement();
                     ui.SetLocation(UIScaler.GetHCenter(-1), offset + 0.5f, 20, 2);
                     ui.SetText(saves[i].saveTime.ToString());
+                    ui.SetPaperLabel();
                     ui.SetTextAlignment(TextAnchor.MiddleRight);
                     ui.SetFontSize(UIScaler.GetMediumFont());
                     ui.SetButton(delegate { Select(tmp); });
@@ -90,6 +92,7 @@ namespace Assets.Scripts.UI.Screens
                     ui = new UIElement();
                     ui.SetLocation(UIScaler.GetHCenter(-12), offset + 2.6f, 31, 1);
                     ui.SetText(saves[i].quest_name);
+                    ui.SetPaperLabel();
                     ui.SetTextAlignment(TextAnchor.MiddleLeft);
                     ui.SetButton(delegate { Select(tmp); });
                 }
