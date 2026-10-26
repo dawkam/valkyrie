@@ -110,6 +110,9 @@ To show a button as unavailable (e.g. a feature not supported on the current pla
 - Use `BUTTON_BORDER_COLOR_INACTIVE` for the border
 - Do **not** call `SetButton(...)` — no callback means no interaction
 
+### Volume sliders
+Music/effects volume is editable in `OptionsScreen` and in game via `GameMenu` → `GameOptionsMenu`. A code-built `Slider` only receives clicks on graphics with `raycastTarget`, so give the slider object a `Color.clear` `Image` (as `GameOptionsMenu` does), or only the filled part is clickable (`OptionsScreen` works around this with a second reversed slider).
+
 ## Read aloud (text to speech)
 
 Quest text windows (`DialogWindow`, `InfoDialog`, `ActivateDialog`, `ActivateDialogMoM`) call `TextToSpeech.Speak(text)` once when opened, draw `ReadAloudButton.Draw(x, y, text, tag)` for replay, and call `TextToSpeech.Stop()` in their close handlers. A new window showing quest/story text should do the same. Do not call `Speak` from methods that redraw (e.g. quota +/-), or the text restarts on every click.

@@ -8,6 +8,7 @@ public class GameMenu {
     private static readonly StringKey SAVE = new StringKey("val","SAVE");
     private static readonly StringKey MAIN_MENU = new StringKey("val", "MAIN_MENU");
     private static readonly StringKey UNDO = new StringKey("val", "UNDO");
+    private static readonly StringKey OPTIONS = new StringKey("val", "OPTIONS");
 
     // Open the menu
     public static void Create()
@@ -32,7 +33,7 @@ public class GameMenu {
         Game game = Game.Get();
         // Border around menu items
         UIElement ui = new UIElement();
-        ui.SetLocation((UIScaler.GetWidthUnits() - 12) / 2, 6, 12, 13);
+        ui.SetLocation((UIScaler.GetWidthUnits() - 12) / 2, 6, 12, 16);
         new UIElementBorder(ui);
 
         ui = new UIElement();
@@ -55,6 +56,15 @@ public class GameMenu {
 
         ui = new UIElement();
         ui.SetLocation((UIScaler.GetWidthUnits() - 10) / 2, 13, 10, 2);
+        ui.SetText(OPTIONS);
+        ui.SetBGColor(new Color(0.03f, 0.0f, 0f));
+        ui.SetFontSize(UIScaler.GetMediumFont());
+        ui.SetFont(game.gameType.GetHeaderFont());
+        ui.SetButton(delegate { Options(); });
+        new UIElementBorder(ui);
+
+        ui = new UIElement();
+        ui.SetLocation((UIScaler.GetWidthUnits() - 10) / 2, 16, 10, 2);
         if (game.testMode)
         {
             ui.SetText(new StringKey("val", "EDITOR"));
@@ -71,7 +81,7 @@ public class GameMenu {
         new UIElementBorder(ui);
 
         ui = new UIElement();
-        ui.SetLocation((UIScaler.GetWidthUnits() - 10) / 2, 16, 10, 2);
+        ui.SetLocation((UIScaler.GetWidthUnits() - 10) / 2, 19, 10, 2);
         ui.SetText(CommonStringKeys.CANCEL);
         ui.SetBGColor(new Color(0.03f, 0.0f, 0f));
         ui.SetFontSize(UIScaler.GetMediumFont());
@@ -91,6 +101,12 @@ public class GameMenu {
     {
         Destroyer.Dialog();
         new SaveSelectScreen(true);
+    }
+
+    public static void Options()
+    {
+        Destroyer.Dialog();
+        GameOptionsMenu.Draw();
     }
 
     public static void Quit()
