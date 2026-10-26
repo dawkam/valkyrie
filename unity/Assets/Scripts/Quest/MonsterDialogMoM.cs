@@ -94,7 +94,7 @@ public class MonsterDialogMoM : MonsterDialog
         }
 
         GameObject mImg = new GameObject("monsterImg" + monster.monsterData.name);
-        mImg.tag = Game.DIALOG;
+        mImg.tag = Game.DIALOG_PART;
         mImg.transform.SetParent(game.uICanvas.transform);
 
         RectTransform trans = mImg.AddComponent<RectTransform>();
@@ -110,7 +110,7 @@ public class MonsterDialogMoM : MonsterDialog
         if (duplicateSprite != null)
         {
             GameObject mImgDupe = new GameObject("monsterDupe" + monster.monsterData.name);
-            mImgDupe.tag = Game.DIALOG;
+            mImgDupe.tag = Game.DIALOG_PART;
             mImgDupe.transform.SetParent(game.uICanvas.transform);
 
             RectTransform dupeFrame = mImgDupe.AddComponent<RectTransform>();
@@ -129,13 +129,13 @@ public class MonsterDialogMoM : MonsterDialog
 
     private static void DrawMonsterHealth(Quest.Monster monster, UnityEngine.Events.UnityAction<Quest.Monster, bool> call)
     {
-        UIElement ui = new UIElement();
+        UIElement ui = new UIElement(Game.DIALOG_PART);
         ui.SetLocation(0.2f, 0.2f, 2, 2);
         ui.SetText(monster.GetHealth().ToString(), Color.red);
         ui.SetFontSize(UIScaler.GetMediumFont());
         new UIElementBorder(ui, Color.red);
 
-        ui = new UIElement();
+        ui = new UIElement(Game.DIALOG_PART);
         ui.SetLocation(1, 9, 2, 2);
         if (monster.damage == 0)
         {
@@ -150,13 +150,13 @@ public class MonsterDialogMoM : MonsterDialog
         }
         ui.SetFontSize(UIScaler.GetMediumFont());
 
-        ui = new UIElement();
+        ui = new UIElement(Game.DIALOG_PART);
         ui.SetLocation(4, 9, 2, 2);
         ui.SetText(monster.damage.ToString(), Color.red);
         ui.SetFontSize(UIScaler.GetMediumFont());
         new UIElementBorder(ui, Color.red);
 
-        ui = new UIElement();
+        ui = new UIElement(Game.DIALOG_PART);
         ui.SetLocation(7, 9, 2, 2);
         if (monster.damage == monster.GetHealth())
         {
@@ -219,6 +219,7 @@ public class MonsterDialogMoM : MonsterDialog
 
     public static void MonsterDamageInc(Quest.Monster monster, UnityEngine.Events.UnityAction<Quest.Monster, bool> call)
     {
+        Destroyer.DialogParts();
         monster.damage += 1;
         if (monster.damage > monster.GetHealth())
         {
@@ -238,11 +239,13 @@ public class MonsterDialogMoM : MonsterDialog
 
     public void Evade()
     {
+        Game.Get().CurrentQuest.Save();
         new InvestigatorEvade(monster);
     }
 
     public void Horror()
     {
+        Game.Get().CurrentQuest.Save();
         new HorrorCheck(monster);
     }
 }

@@ -149,6 +149,7 @@ public class NextStageButton
         {
             game.audioControl.PlayTrait("horror");
             game.CurrentQuest.phase = Quest.MoMPhase.horror;
+            Update();
             return;
         }
 

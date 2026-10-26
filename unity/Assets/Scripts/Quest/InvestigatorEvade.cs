@@ -1,9 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Assets.Scripts.Content;
 using Assets.Scripts.UI;
+using ValkyrieTools;
 
 // Window with Investigator evade information
 public class InvestigatorEvade {
@@ -30,26 +30,21 @@ public class InvestigatorEvade {
     public void PickEvade(Quest.Monster m)
     {
         Game game = Game.Get();
-        List<EvadeData> evades = game.cd.Values<EvadeData>()
-            .Where(md => m.monsterData.sectionName.Equals(MonsterData.type + md.monster))
-            .ToList();
-
         QuestMonster qm = m.monsterData as QuestMonster;
-        if (evades.Count == 0 && qm != null && !string.IsNullOrWhiteSpace(qm.derivedType))
+        List<EvadeData> evades = MonsterData.FindForMonster(game.cd.Values<EvadeData>(), ed => ed.monster,
+            m.monsterData.sectionName, qm?.derivedType);
+
+        if (evades.Count == 0)
         {
-            var derivedEvades = game.cd.Values<EvadeData>()
-                .Where(kv => qm.derivedType.Equals(MonsterData.type + kv.monster));
-            evades.AddRange(derivedEvades);
+            ValkyrieDebug.Log("Warning: No evade found for monster: " + m.monsterData.sectionName);
+            return;
         }
 
-        if (evades.Count > 0)
-        {
-            text = evades[Random.Range(0, evades.Count)].text.Translate().Replace("{0}", m.monsterData.name.Translate());
+        text = evades[Random.Range(0, evades.Count)].text.Translate().Replace("{0}", m.monsterData.name.Translate());
 
-            game.CurrentQuest.log.Add(new Quest.LogEntry(text.Replace("\n", "\\n")));
+        game.CurrentQuest.log.Add(new Quest.LogEntry(text.Replace("\n", "\\n")));
 
-            Draw();
-        }
+        Draw();
     }
 
     public void Draw()

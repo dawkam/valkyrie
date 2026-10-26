@@ -785,12 +785,7 @@ public class Quest
         
         // Get state
         bool.TryParse(saveData.Get("Quest", "heroesSelected"), out heroesSelected);
-        bool horror;
-        bool.TryParse(saveData.Get("Quest", "horror"), out horror);
-        if (horror)
-        {
-            phase = MoMPhase.horror;
-        }
+        phase = ParseSavedPhase(saveData.Get("Quest", "phase"), saveData.Get("Quest", "horror"));
 
         // Set camera
         float camx, camy, camz;
@@ -1481,6 +1476,7 @@ public class Quest
         {
             r += "horror=false" + nl;
         }
+        r += "phase=" + phase + nl;
 
         r += "heroesSelected=" + heroesSelected + nl;
         r += "camx=" + game.cc.gameObject.transform.position.x + nl;
@@ -2749,6 +2745,18 @@ public class Quest
         mythos,
         monsters,
         horror
+    }
+
+    // Saves made before "phase" was stored only record the horror flag
+    public static MoMPhase ParseSavedPhase(string savedPhase, string savedHorror)
+    {
+        if (Enum.TryParse(savedPhase, out MoMPhase parsed) && Enum.IsDefined(typeof(MoMPhase), parsed))
+        {
+            return parsed;
+        }
+
+        bool.TryParse(savedHorror, out bool horror);
+        return horror ? MoMPhase.horror : MoMPhase.investigator;
     }
 
     public class LogEntry

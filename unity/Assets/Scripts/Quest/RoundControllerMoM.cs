@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.Content;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 // This round controller extends the standard controller for MoM specific round order
 public class RoundControllerMoM : RoundController
@@ -77,9 +79,9 @@ public class RoundControllerMoM : RoundController
             if (!game.CurrentQuest.monsters[i].activated)
             {
                 QuestMonster qm = game.CurrentQuest.monsters[i].monsterData as QuestMonster;
-                if (qm != null && qm.activations != null && qm.activations.Length == 1 &&
-                    qm.activations[0].IndexOf("Event") == 0
-                    && game.CurrentQuest.eManager.events[qm.activations[0]].Disabled())
+                if (qm != null && IsEventActivation(qm.activations)
+                    && (!game.CurrentQuest.eManager.events.TryGetValue(qm.activations[0], out EventManager.Event activationEvent)
+                        || activationEvent.Disabled()))
                 {
                     // monster cannot be activated, mark as activated
                     game.CurrentQuest.monsters[i].activated = true;
@@ -98,8 +100,7 @@ public class RoundControllerMoM : RoundController
 
             // Find out of this monster is quest specific
             QuestMonster qm = toActivate.monsterData as QuestMonster;
-            if (qm != null && qm.activations != null && qm.activations.Length == 1 &&
-                qm.activations[0].IndexOf("Event") == 0)
+            if (qm != null && IsEventActivation(qm.activations))
             {
                 toActivate.masterStarted = true;
                 toActivate.activated = true;
@@ -116,6 +117,12 @@ public class RoundControllerMoM : RoundController
         }
 
         return true;
+    }
+
+    public static bool IsEventActivation(string[] activations)
+    {
+        return activations != null && activations.Length == 1 &&
+            activations[0].StartsWith("Event", StringComparison.Ordinal);
     }
 
     public override void EndRound()

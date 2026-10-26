@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Content;
 using Assets.Scripts.UI;
+using ValkyrieTools;
 
-// Window with Investigator evade information
+// Window with monster horror check information
 public class HorrorCheck {
     public HorrorCheck(Quest.Monster m)
     {
@@ -25,36 +26,22 @@ public class HorrorCheck {
     public void PickHorror(Quest.Monster m)
     {
         Game game = Game.Get();
-        List<HorrorData> horrors = new List<HorrorData>();
-        foreach (HorrorData hd in game.cd.Values<HorrorData>())
-        {
-            if (m.monsterData.sectionName.Equals(MonsterData.type + hd.monster))
-            {
-                horrors.Add(hd);
-            }
-        }
-
         QuestMonster qm = m.monsterData as QuestMonster;
-        if (horrors.Count == 0 && qm != null && !string.IsNullOrWhiteSpace(qm.derivedType))
-        {
-            foreach (HorrorData horrorData in game.cd.Values<HorrorData>())
-            {
-                if (qm.derivedType.Equals("Monster" + horrorData.monster))
-                {
-                    horrors.Add(horrorData);
-                }
-            }
-        }
+        List<HorrorData> horrors = MonsterData.FindForMonster(game.cd.Values<HorrorData>(), hd => hd.monster,
+            m.monsterData.sectionName, qm?.derivedType);
 
-        if (horrors.Count != 0) Draw(horrors[Random.Range(0, horrors.Count)], m);
+        if (horrors.Count == 0)
+        {
+            ValkyrieDebug.Log("Warning: No horror check found for monster: " + m.monsterData.sectionName);
+            return;
+        }
+        Draw(horrors[Random.Range(0, horrors.Count)], m);
     }
 
     protected void Draw(HorrorData horror, Quest.Monster m)
     {
         Game game = Game.Get();
-        // If a dialog window is open we force it closed (this shouldn't happen)
-        foreach (GameObject go in GameObject.FindGameObjectsWithTag(Game.DIALOG))
-            Object.Destroy(go);
+        Destroyer.Dialog();
 
         string text = horror.text.Translate().Replace("{0}", m.monsterData.name.Translate());
         UIElement ui = new UIElement();

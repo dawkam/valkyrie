@@ -200,6 +200,17 @@ public class MonsterData : GenericData
     {
     }
 
+    // Find content (horrors, evades) for a monster, falling back to its derived base type
+    public static List<T> FindForMonster<T>(IEnumerable<T> data, Func<T, string> monsterOf, string sectionName, string derivedType)
+    {
+        List<T> matches = data.Where(d => sectionName.Equals(type + monsterOf(d))).ToList();
+        if (matches.Count == 0 && !string.IsNullOrWhiteSpace(derivedType))
+        {
+            matches = data.Where(d => derivedType.Equals(type + monsterOf(d))).ToList();
+        }
+        return matches;
+    }
+
     public MonsterData(string name, Dictionary<string, string> content, string path, List<string> sets) : base(name, content, path, type, sets)
     {
         // Get usage info

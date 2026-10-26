@@ -2,8 +2,9 @@
 using Assets.Scripts.UI;
 using UnityEngine;
 using System.Collections.Generic;
+using ValkyrieTools;
 
-// Next stage button is used by MoM to move between investigators and monsters
+// Window listing the investigators' inspectable items in MoM
 public class InventoryWindowMoM
 {
     // Construct and display
@@ -37,7 +38,11 @@ public class InventoryWindowMoM
         foreach (string s in game.CurrentQuest.itemInspect.Keys)
         {
             string tmp = s;
-            var itemData = game.cd.Get<ItemData>(s);
+            if (!game.cd.TryGet(s, out ItemData itemData))
+            {
+                ValkyrieDebug.Log("Warning: Missing item data for: " + s);
+                continue;
+            }
 
             ui = new UIElement(scrollArea.GetScrollTransform());
             ui.SetLocation(xOffset, 9, 8, 3);
@@ -46,11 +51,14 @@ public class InventoryWindowMoM
             ui.SetBGColor(Color.white);
 
             Texture2D itemTex = ContentData.FileToTexture(itemData.image);
-            Sprite itemSprite = Sprite.Create(itemTex, new Rect(0, 0, itemTex.width, itemTex.height), Vector2.zero, 1, 0, SpriteMeshType.FullRect);
-            ui = new UIElement(scrollArea.GetScrollTransform());
-            ui.SetLocation(xOffset, 1, 8, 8);
-            ui.SetButton(delegate { Inspect(tmp); });
-            ui.SetImage(itemSprite);
+            if (itemTex != null)
+            {
+                Sprite itemSprite = Sprite.Create(itemTex, new Rect(0, 0, itemTex.width, itemTex.height), Vector2.zero, 1, 0, SpriteMeshType.FullRect);
+                ui = new UIElement(scrollArea.GetScrollTransform());
+                ui.SetLocation(xOffset, 1, 8, 8);
+                ui.SetButton(delegate { Inspect(tmp); });
+                ui.SetImage(itemSprite);
+            }
 
             xOffset += 9;
         }

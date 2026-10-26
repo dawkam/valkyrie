@@ -93,6 +93,8 @@ UIElement ui = new UIElement(Game.DIALOG_PART);
 ui.SetButton(delegate { Destroyer.DialogParts(); });
 ```
 
+MoM monster image and health counters (`MonsterDialogMoM.DrawMonster`) are `Game.DIALOG_PART` so +/- can redraw them alone. A window that replaces one showing a monster must use `Destroyer.Dialog()`, not a loop over `FindGameObjectsWithTag(Game.DIALOG)`, or the old monster image stays on screen.
+
 ### Disabled button pattern
 
 To show a button as unavailable (e.g. a feature not supported on the current platform), match the pattern used for the inactive "Load Quest" button:
