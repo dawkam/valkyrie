@@ -34,4 +34,5 @@ All `Localization.*.txt` files use **Windows CRLF (`\r\n`) line endings**. The p
 **Rules:**
 - Never use PowerShell here-strings or string concatenation with bare `\n` to insert content into localization files. The Edit tool (which preserves the file's existing line endings) is safe to use.
 - If using PowerShell to modify localization files, verify line endings with a hex check afterward, and replace lone `\n` before keys with `\r\n`.
+- Do not use Git Bash `awk` on these files: it silently strips every `\r`. Git Bash `grep`/`od` also hide `\r`, so verify bytes with PowerShell `[IO.File]::ReadAllBytes`.
 - Each non-English file has its own **localized** value for `QUEST_NAME_UPDATE` (e.g. `[Aktualisierung]` in German, `[Mise à jour]` in French). Do not assume the English value is shared — always grep for the actual key in each file before using it as an anchor.

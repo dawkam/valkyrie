@@ -480,6 +480,8 @@ FILTER_TITLE,Filtres
 FILTER_SELECT_LANG,Sélectionnez le(s) language(s) que vous comprenez:
 FILTER_MISSING_EXPANSIONS_ON,Cachez les scénarios avec une extension manquante  ☑
 FILTER_MISSING_EXPANSIONS_OFF,Cachez les scénarios avec une extension manquante  ☐
+FILTER_PLAYERS,Nombre de joueurs :
+FILTER_PLAYERS_ANY,Tous
 
 AUTHORS_SHORT,Auteurs en une ligne de texte (pour  le "tri par auteurs")
 AUTHORS_UNKNOWN,Auteurs inconnus (le scénario doit être mis à jour pour avoir cette information)

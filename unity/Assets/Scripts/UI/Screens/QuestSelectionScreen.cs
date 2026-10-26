@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Assets.Scripts.Content;
@@ -25,6 +26,7 @@ namespace Assets.Scripts.UI.Screens
         UIElement sortOptionsPopup = null;
         UIElement filtersPopup = null;
         UIElement filter_missing_expansions_text = null;
+        UIElementEditable filter_players_input = null;
 
         // Class to handle async images to display
         ImgAsyncLoader images_list = null;
@@ -54,6 +56,8 @@ namespace Assets.Scripts.UI.Screens
         private readonly StringKey FILTER_SELECT_LANG = new StringKey("val", "FILTER_SELECT_LANG");
         private readonly StringKey FILTER_MISSING_EXPANSIONS_ON = new StringKey("val", "FILTER_MISSING_EXPANSIONS_ON");
         private readonly StringKey FILTER_MISSING_EXPANSIONS_OFF = new StringKey("val", "FILTER_MISSING_EXPANSIONS_OFF");
+        private readonly StringKey FILTER_PLAYERS = new StringKey("val", "FILTER_PLAYERS");
+        private readonly StringKey FILTER_PLAYERS_ANY = new StringKey("val", "FILTER_PLAYERS_ANY");
 
         private readonly StringKey MISSING_EXPANSIONS = new StringKey("val", "MISSING_EXPANSIONS");
 
@@ -85,6 +89,7 @@ namespace Assets.Scripts.UI.Screens
         string[] langs = "English,Spanish,French,German,Italian,Portuguese,Polish,Russian,Chinese,Czech,Korean,Japanese,Ukrainian".Split(',');
         Dictionary<string, bool> langs_selected = null;
         bool filter_missing_expansions = false;
+        int filter_players = 0;
 
         // sort options
 
@@ -203,6 +208,13 @@ namespace Assets.Scripts.UI.Screens
             {
                 filter_missing_expansions = false;
                 bool.TryParse(config_values["filterMissingExpansions"], out filter_missing_expansions);
+            }
+
+            filter_players = 0;
+            if (config_values.ContainsKey("filterPlayers"))
+            {
+                int.TryParse(config_values["filterPlayers"], NumberStyles.Integer, CultureInfo.InvariantCulture, out filter_players);
+                filter_players = Mathf.Clamp(filter_players, 0, game.gameType.MaxHeroes());
             }
 
             // Heading
@@ -346,6 +358,8 @@ namespace Assets.Scripts.UI.Screens
             filter_missing_expansions_text.SetFontSize(UIScaler.GetMediumFont());
             filter_missing_expansions_text.SetButton(delegate { SetFilterMissingExpansions(); });
 
+            DrawPlayersFilter();
+
             // OK button closes popup and refresh quest list
             ui = new UIElement(filtersPopup.GetTransform());
             ui.SetLocation(18, 20, 6, 2);
@@ -353,7 +367,7 @@ namespace Assets.Scripts.UI.Screens
             ui.SetBGColor(new Color(0.03f, 0.0f, 0f));
             ui.SetFont(game.gameType.GetHeaderFont());
             ui.SetFontSize(UIScaler.GetMediumFont());
-            ui.SetButton(delegate { filtersPopup.Destroy(); filtersPopup = null; ReloadQuestList(); });
+            ui.SetButton(delegate { ApplyPlayersFilter(); filtersPopup.Destroy(); filtersPopup = null; ReloadQuestList(); });
             new UIElementBorder(ui);
         }
 
@@ -374,6 +388,46 @@ namespace Assets.Scripts.UI.Screens
                 filter_missing_expansions = true;
                 filter_missing_expansions_text.SetText(FILTER_MISSING_EXPANSIONS_ON);
             }
+        }
+
+        private void DrawPlayersFilter()
+        {
+            const float y_offset = 17.5f;
+
+            UIElement ui = new UIElement(filtersPopup.GetTransform());
+            ui.SetLocation(2, y_offset, 16, 2);
+            ui.SetText(FILTER_PLAYERS);
+            ui.SetTextAlignment(TextAnchor.MiddleLeft);
+            ui.SetFont(game.gameType.GetHeaderFont());
+            ui.SetFontSize(UIScaler.GetMediumFont());
+
+            filter_players_input = new UIElementEditable(filtersPopup.GetTransform());
+            filter_players_input.SetLocation(18, y_offset, 5, 2);
+            filter_players_input.SetText(PlayersFilterText());
+            filter_players_input.SetFontSize(UIScaler.GetMediumFont());
+            filter_players_input.SetSingleLine();
+            filter_players_input.SetMaxCharacters(2);
+            filter_players_input.SetPlaceholder(FILTER_PLAYERS_ANY);
+            filter_players_input.SetButton(ApplyPlayersFilter);
+            new UIElementBorder(filter_players_input);
+        }
+
+        private void ApplyPlayersFilter()
+        {
+            if (filtersPopup == null) return;
+
+            int.TryParse(filter_players_input.GetText().Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int players);
+            filter_players = Mathf.Clamp(players, 0, game.gameType.MaxHeroes());
+
+            game.config.data.Add("UserConfig", "filterPlayers", filter_players.ToString(CultureInfo.InvariantCulture));
+            game.config.Save();
+
+            filter_players_input.SetText(PlayersFilterText());
+        }
+
+        private string PlayersFilterText()
+        {
+            return filter_players == 0 ? "" : filter_players.ToString(CultureInfo.InvariantCulture);
         }
 
         private void PerformSearch()
@@ -1010,6 +1064,12 @@ namespace Assets.Scripts.UI.Screens
 
             // Filter packages
             if (filter_missing_expansions && q.GetMissingPacks(game.cd.GetLoadedPackIDs()).Count != 0)
+            {
+                nb_filtered_out_quest++;
+                continue;
+            }
+
+            if (!QuestData.Quest.SupportsPlayerCount(q.minHero, q.maxHero, filter_players))
             {
                 nb_filtered_out_quest++;
                 continue;

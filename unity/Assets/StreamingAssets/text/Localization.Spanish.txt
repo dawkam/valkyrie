@@ -484,6 +484,8 @@ FILTER_TITLE,Seleccionar filtros
 FILTER_SELECT_LANG,Seleccione el(los) idioma(s) que habla:
 FILTER_MISSING_EXPANSIONS_ON,Ocultar escenarios con ampliaciones que faltan ☑
 FILTER_MISSING_EXPANSIONS_OFF,Ocultar escenarios con ampliaciones que faltan ☐
+FILTER_PLAYERS,Número de jugadores:
+FILTER_PLAYERS_ANY,Cualquiera
 
 AUTHORS_SHORT,Autores en una sola línia (para "ordenar por autor")
 AUTHORS_UNKNOWN,Autores desconocidos (necesita una actualización de escenario por autor)

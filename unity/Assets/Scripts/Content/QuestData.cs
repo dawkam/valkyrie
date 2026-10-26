@@ -2125,6 +2125,12 @@ public class QuestData
         // Context for async loading
         private QuestLoaderContext context = null;
 
+        // A player count of 0 means no player filter
+        public static bool SupportsPlayerCount(int questMin, int questMax, int players)
+        {
+            return players <= 0 || (questMin <= players && players <= questMax);
+        }
+
         // Create from path
         public Quest(string pathIn)
         {

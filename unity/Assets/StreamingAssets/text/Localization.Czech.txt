@@ -653,6 +653,8 @@ FILTER_TITLE,Vyber filtry
 FILTER_SELECT_LANG,Vyber jazyk(y):
 FILTER_MISSING_EXPANSIONS_ON,Skrýt scénáře s chybějícími rozšířeními  ☑
 FILTER_MISSING_EXPANSIONS_OFF,Skrýt scénáře s chybějícími rozšířeními  ☐
+FILTER_PLAYERS,Počet hráčů:
+FILTER_PLAYERS_ANY,Libovolný
 
 AUTHORS_SHORT,"Jeden řádek pro autory (pro volbu ""řazení podle autora"")"
 AUTHORS_UNKNOWN,Neznámí autoři

@@ -424,6 +424,8 @@ FILTER_TITLE,Seleziona filtri
 FILTER_SELECT_LANG,Seleziona le lingue che parli:
 FILTER_MISSING_EXPANSIONS_ON,Nascondi scenari con espansioni mancanti ☑
 FILTER_MISSING_EXPANSIONS_OFF,Nascondi scenari con espansioni mancanti ☐
+FILTER_PLAYERS,Numero di giocatori:
+FILTER_PLAYERS_ANY,Qualsiasi
 
 AUTHORS_SHORT,Linea di testo per Autori (per l’opzione "filtra per autore")
 AUTHORS_UNKNOWN,Autori sconosciuti (richiede aggiornamento scenario dell’autore)

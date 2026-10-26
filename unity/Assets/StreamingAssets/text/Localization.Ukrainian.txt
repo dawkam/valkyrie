@@ -486,6 +486,8 @@ FILTER_TITLE,Обрати фільтри
 FILTER_SELECT_LANG,Обрати мову (мови), якою ви володієте:
 FILTER_MISSING_EXPANSIONS_ON,Приховати сценарії з відсутніми доповненнями  ☑
 FILTER_MISSING_EXPANSIONS_OFF,Приховати сценарії з відсутніми доповненнями  ☐
+FILTER_PLAYERS,Кількість гравців:
+FILTER_PLAYERS_ANY,Будь-яка
 
 AUTHORS_SHORT,Один рядок для авторів (для опції «сортувати за автором»)
 AUTHORS_UNKNOWN,Невідомі автори (потрібне оновлення сценарію автором)

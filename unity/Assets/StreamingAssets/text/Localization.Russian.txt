@@ -481,6 +481,8 @@ FILTER_TITLE,Фильтры
 FILTER_SELECT_LANG,Выберите язык(-и), на котором вы говорите:
 FILTER_MISSING_EXPANSIONS_ON,Скрыть сценарии с отсутствующими дополнениями ☑
 FILTER_MISSING_EXPANSIONS_OFF,Скрыть сценарии с отсутствующими дополнениями ☐
+FILTER_PLAYERS,Количество игроков:
+FILTER_PLAYERS_ANY,Любое
 
 AUTHORS_SHORT,Автор сценария (для "сортировки по авторам")
 AUTHORS_UNKNOWN,Аноним (требуется обновление сценария автором)
