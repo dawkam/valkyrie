@@ -97,6 +97,11 @@ public class ChangePhaseWindow
         timer.Init(transition_duration, Close);
     }
 
+    public static bool IsDisplayed()
+    {
+        return gameobject_timer != null;
+    }
+
     public static void Close()
     {
         Destroyer.Transition();

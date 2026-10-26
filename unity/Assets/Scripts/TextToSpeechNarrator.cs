@@ -31,7 +31,7 @@ public class TextToSpeechNarrator : MonoBehaviour
 
     void Update()
     {
-        byte[] wav = voice.isPlaying ? null : TextToSpeech.TakeSpeech();
+        byte[] wav = voice.isPlaying || ChangePhaseWindow.IsDisplayed() ? null : TextToSpeech.TakeSpeech();
         if (wav != null)
         {
             Play(wav);
