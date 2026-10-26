@@ -6,6 +6,7 @@ using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using Assets.Scripts;
+using Assets.Scripts.Content;
 using UnityEngine;
 using ValkyrieTools;
 
@@ -18,6 +19,7 @@ public static class TextToSpeech
     private const float VOICE_PITCH = 0.8f;
     private const string SENTENCE_PAUSE = "<break time='600ms'/>";
     private const string VOICE_LANGUAGE_TOKEN = "__VOICE_LANGUAGE__";
+    private const string SYMBOL_NAME_KEY_PREFIX = "SPEECH_SYMBOL_";
 
     private const string SETUP_COMMAND = "Add-Type -AssemblyName System.Runtime.WindowsRuntime"
         + "; $null = [Windows.Media.SpeechSynthesis.SpeechSynthesizer,Windows.Media.SpeechSynthesis,ContentType=WindowsRuntime]"
@@ -79,7 +81,7 @@ public static class TextToSpeech
         if (!IsEnabled()) return;
 
         Stop();
-        string speechText = ToSpeechText(EventManager.InputSymbolReplace(text));
+        string speechText = ToSpeechText(EventManager.InputSymbolReplace(text), SpokenSymbolName);
         if (speechText.Length == 0) return;
 
         int id;
@@ -143,15 +145,22 @@ public static class TextToSpeech
         }
     }
 
-    public static string ToSpeechText(string text)
+    public static string ToSpeechText(string text, Func<string, string> symbolName = null)
     {
         if (string.IsNullOrEmpty(text)) return "";
 
         string output = text.Replace("\\n", " ");
         output = RICH_TEXT_TAG.Replace(output, "");
-        output = NAMED_SYMBOL.Replace(output, "$1");
+        output = NAMED_SYMBOL.Replace(output, match => symbolName == null ? match.Groups[1].Value : symbolName(match.Groups[1].Value));
         output = OTHER_MARKER.Replace(output, "");
         return WHITESPACE.Replace(output, " ").Trim();
+    }
+
+    // Stat icons like {will} are spoken by their name in the current language
+    private static string SpokenSymbolName(string symbol)
+    {
+        StringKey name = new StringKey("val", SYMBOL_NAME_KEY_PREFIX + symbol.ToUpperInvariant());
+        return name.KeyExists() ? name.Translate() : symbol;
     }
 
     public static string GetLanguageCode(string language)

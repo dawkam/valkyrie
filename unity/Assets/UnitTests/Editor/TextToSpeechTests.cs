@@ -31,6 +31,12 @@ namespace Valkyrie.UnitTests
         }
 
         [Test]
+        public void ToSpeechText_WithSymbolName_UsesGivenNameForSymbols()
+        {
+            Assert.AreEqual("Test Wola to resist.", TextToSpeech.ToSpeechText("Test {will} to resist.", symbol => symbol == "will" ? "Wola" : symbol));
+        }
+
+        [Test]
         public void ToSpeechText_RemovesOtherMarkers()
         {
             Assert.AreEqual("Use the item.", TextToSpeech.ToSpeechText("Use {MAD01} the {var:item} item."));
